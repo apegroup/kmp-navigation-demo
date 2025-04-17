@@ -28,22 +28,18 @@ import java.net.URLEncoder
 @Composable
 fun Navigation() {
     val navigation: NavigationObservable = koinInject()
-    val navController by rememberUpdatedState(newValue = rememberNavController())
+    val navController = rememberNavController()
     val bottomSheetNavigator = rememberBottomSheetNavigator()
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current
-
-    // Add the bottom sheet navigator to the controller
     navController.navigatorProvider += bottomSheetNavigator
 
-    LaunchedEffect(key1 = context) {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+    LaunchedEffect(key1 = LocalContext.current) {
+        LocalLifecycleOwner.current.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             navigation.navigationObservable.collect {
                 when (it) {
                     is NavigationEvent.Pop -> navController.navigateUp()
                     is NavigationEvent.PopToRoot -> navController.popBackStack()
-                    is NavigationEvent.Push -> navController.navigate(it.route.toRouteString())
-                    is NavigationEvent.PushAsModal -> navController.navigate(it.route.toRouteString())
+                    is NavigationEvent.Push -> navController.navigate(it.route.routeString)
+                    is NavigationEvent.PushAsModal -> navController.navigate(it.route.routeString)
                 }
             }
         }
@@ -53,32 +49,26 @@ fun Navigation() {
         navController = navController,
         startDestination = RouteName.Home.name
     ) {
-
-        composable(route = "${RouteName.Home.name}?params={params}", arguments = listOf(paramsArgument)) {
+        // home screen
+        composable(route = RouteName.Home.routeTemplate, arguments = navArguments) {
             HomeScreen(viewModel = koinInject(), params = it.routeParams)
         }
 
-        composable(route = "${RouteName.Account.name}?params={params}", arguments = listOf(paramsArgument)) {
+        // account screen
+        composable(route = RouteName.Account.routeTemplate, arguments = navArguments) {
             AccountScreen(viewModel = koinInject(), params = it.routeParams)
         }
 
-        bottomSheet(route = "${RouteName.Modal.name}?params={params}", arguments = listOf(paramsArgument)) {
+        // modal screen
+        bottomSheet(route = RouteName.Modal.routeTemplate, arguments = navArguments) {
             ModalScreen(viewModel = koinInject(), params = it.routeParams)
         }
 
-        composable(route = "${RouteName.Login.name}?params={params}", arguments = listOf(paramsArgument)) {
+        // login screen
+        composable(route = RouteName.Login.routeTemplate, arguments = navArguments) {
             LoginScreen(viewModel = koinInject(), params = it.routeParams) {
                 navController.navigateUp() // android can still manually modify backstack
             }
         }
     }
-}
-
-// helper functions to clean up navHost
-private fun RouteInfo.toRouteString(params: String = "") = "$name?params=${URLEncoder.encode(params, "UTF-8")}"
-private val NavBackStackEntry.routeParams get(): String = arguments?.getString("params") ?: ""
-private val paramsArgument = navArgument("params") {
-    type = NavType.StringType
-    defaultValue = ""
-    nullable = false
 }

@@ -33,7 +33,7 @@ class NavigationHandler: ObservableObject {
             // pop the top screen off the stack, if the top route is a modal
             // close the modal
             case .pop:
-            if sheetData.destination != nil { onSheetDismiss() }
+                if sheetData.destination != nil { onSheetDismiss() }
                 guard path.count >= 1 else { return }
                 path.removeLast()
             
@@ -62,7 +62,6 @@ class NavigationHandler: ObservableObject {
 
 
 public enum NavigationEventKs {
-
     case pop
     case popToRoot
     case push(NavigationEvent.Push)
@@ -81,5 +80,4 @@ public enum NavigationEventKs {
         fatalError("NavigationEventKs not synchronized with NavigationEvent class")
       }
     }
-
 }
