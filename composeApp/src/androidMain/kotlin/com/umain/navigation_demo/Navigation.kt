@@ -6,6 +6,8 @@ import androidx.navigation.compose.rememberNavController
 import org.koin.compose.koinInject
 import androidx.compose.material.navigation.rememberBottomSheetNavigator
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -15,6 +17,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.plusAssign
 import com.umain.navigation_demo.models.NavigationEvent
 import com.umain.navigation_demo.models.RouteInfo
 import com.umain.navigation_demo.models.RouteName
@@ -28,13 +31,13 @@ import java.net.URLEncoder
 @Composable
 fun Navigation() {
     val navigation: NavigationObservable = koinInject()
-    val navController = rememberNavController()
+    val navController by rememberUpdatedState(newValue = rememberNavController())
     val bottomSheetNavigator = rememberBottomSheetNavigator()
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
 
     // Add the bottom sheet navigator to the controller
-    navController.navigatorProvider.addNavigator(bottomSheetNavigator)
+    navController.navigatorProvider += bottomSheetNavigator
 
     LaunchedEffect(key1 = context) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
@@ -111,4 +114,4 @@ fun NavGraphBuilder.Modal(
 }
 
 // convert KMP RouteInfo to android string URL
-fun RouteInfo.toRouteString(params: String = "") = "$name?&params=${URLEncoder.encode(params, "UTF-8")}"
+fun RouteInfo.toRouteString(params: String = "") = "$name?params=${URLEncoder.encode(params, "UTF-8")}"
