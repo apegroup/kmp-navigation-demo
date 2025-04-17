@@ -1,9 +1,7 @@
 package com.umain.navigation_demo
 
-import androidx.compose.material.navigation.ModalBottomSheetLayout
 import androidx.compose.material.navigation.bottomSheet
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.navigation.compose.rememberNavController
 import org.koin.compose.koinInject
 import androidx.compose.material.navigation.rememberBottomSheetNavigator
@@ -23,23 +21,8 @@ import com.umain.navigation_demo.models.RouteName
 import com.umain.navigation_demo.screens.AccountScreen
 import com.umain.navigation_demo.screens.HomeScreen
 import com.umain.navigation_demo.screens.LoginScreen
+import com.umain.navigation_demo.screens.ModalScreen
 import java.net.URLEncoder
-
-sealed class Screen(val route: String) {
-    data object Home : Screen("home")
-    data object Account : Screen("Account")
-    data object Login : Screen("Login")
-    data object Modal : Screen("Modal")
-
-    fun asRoute(params: String = "") = "$route?&params=${URLEncoder.encode(params, "UTF-8")}"
-}
-
-private fun buildRoute(routeInfo: RouteInfo) = when (routeInfo.name) {
-    RouteName.Home -> Screen.Home.asRoute(routeInfo.params)
-    RouteName.Account -> Screen.Account.asRoute(routeInfo.params)
-    RouteName.Login -> Screen.Login.asRoute(routeInfo.params)
-    RouteName.Modal -> Screen.Modal.asRoute(routeInfo.params)
-}
 
 
 @Composable
@@ -59,8 +42,8 @@ fun Navigation() {
                 when (it) {
                     is NavigationEvent.Pop -> navController.navigateUp()
                     is NavigationEvent.PopToRoot -> navController.popBackStack()
-                    is NavigationEvent.Push -> navController.navigate(buildRoute(it.route))
-                    is NavigationEvent.PushAsModal -> navController.navigate(buildRoute(it.route))
+                    is NavigationEvent.Push -> navController.navigate(it.route.toRouteString())
+                    is NavigationEvent.PushAsModal -> navController.navigate(it.route.toRouteString())
                 }
             }
         }
@@ -68,25 +51,25 @@ fun Navigation() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = RouteName.Home.name
     ) {
 
-        Screen(Screen.Home.route) {
+        Screen(RouteName.Home.name) {
             HomeScreen(viewModel = koinInject(), params = it)
         }
 
-        Screen(Screen.Account.route) {
+        Screen(RouteName.Account.name) {
             AccountScreen(viewModel = koinInject(), params = it)
         }
 
-        Screen(Screen.Login.route) {
+        Screen(RouteName.Login.name) {
             LoginScreen(viewModel = koinInject(), params = it) {
                 navController.navigateUp() // android can still manually modify backstack
             }
         }
 
-        Modal(route = Screen.Modal.route) {
-            HomeScreen(viewModel = koinInject(), params = it)
+        Modal(route = RouteName.Modal.name) {
+            ModalScreen(viewModel = koinInject(), params = it)
         }
     }
 }
@@ -126,3 +109,6 @@ fun NavGraphBuilder.Modal(
         content(it.arguments?.getString("params") ?: "")
     }
 }
+
+// convert KMP RouteInfo to android string URL
+fun RouteInfo.toRouteString(params: String = "") = "$name?&params=${URLEncoder.encode(params, "UTF-8")}"
