@@ -11,9 +11,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.umain.navigation_demo.Screen
-import com.umain.navigation_demo.viewmodels.HomeEvent
-import com.umain.navigation_demo.viewmodels.HomeViewModel
 import com.umain.navigation_demo.viewmodels.ModalEvent
 import com.umain.navigation_demo.viewmodels.ModalState
 import com.umain.navigation_demo.viewmodels.ModalViewModel

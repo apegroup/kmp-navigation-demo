@@ -12,12 +12,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import androidx.navigation.plusAssign
 import com.umain.navigation_demo.models.NavigationEvent
 import com.umain.navigation_demo.models.RouteInfo
 import com.umain.navigation_demo.models.RouteName
@@ -57,61 +54,31 @@ fun Navigation() {
         startDestination = RouteName.Home.name
     ) {
 
-        Screen(RouteName.Home.name) {
-            HomeScreen(viewModel = koinInject(), params = it)
+        composable(route = "${RouteName.Home.name}?params={params}", arguments = listOf(paramsArgument)) {
+            HomeScreen(viewModel = koinInject(), params = it.routeParams)
         }
 
-        Screen(RouteName.Account.name) {
-            AccountScreen(viewModel = koinInject(), params = it)
+        composable(route = "${RouteName.Account.name}?params={params}", arguments = listOf(paramsArgument)) {
+            AccountScreen(viewModel = koinInject(), params = it.routeParams)
         }
 
-        Screen(RouteName.Login.name) {
-            LoginScreen(viewModel = koinInject(), params = it) {
+        bottomSheet(route = "${RouteName.Modal.name}?params={params}", arguments = listOf(paramsArgument)) {
+            ModalScreen(viewModel = koinInject(), params = it.routeParams)
+        }
+
+        composable(route = "${RouteName.Login.name}?params={params}", arguments = listOf(paramsArgument)) {
+            LoginScreen(viewModel = koinInject(), params = it.routeParams) {
                 navController.navigateUp() // android can still manually modify backstack
             }
         }
-
-        Modal(route = RouteName.Modal.name) {
-            ModalScreen(viewModel = koinInject(), params = it)
-        }
     }
 }
 
-fun NavGraphBuilder.Screen(
-    route: String,
-    content: @Composable (params: String) -> Unit,
-) {
-    composable(
-        route = "$route?params={params}",
-        arguments = listOf(
-            navArgument("params") {
-                type = NavType.StringType
-                defaultValue = ""
-                nullable = false
-            },
-        )
-    ) {
-        content(it.arguments?.getString("params") ?: "")
-    }
+// helper functions to clean up navHost
+private fun RouteInfo.toRouteString(params: String = "") = "$name?params=${URLEncoder.encode(params, "UTF-8")}"
+private val NavBackStackEntry.routeParams get(): String = arguments?.getString("params") ?: ""
+private val paramsArgument = navArgument("params") {
+    type = NavType.StringType
+    defaultValue = ""
+    nullable = false
 }
-
-fun NavGraphBuilder.Modal(
-    route: String,
-    content: @Composable (params: String) -> Unit,
-) {
-    bottomSheet(
-        route = "$route?params={params}",
-        arguments = listOf(
-            navArgument("params") {
-                type = NavType.StringType
-                defaultValue = ""
-                nullable = false
-            },
-        )
-    ) {
-        content(it.arguments?.getString("params") ?: "")
-    }
-}
-
-// convert KMP RouteInfo to android string URL
-fun RouteInfo.toRouteString(params: String = "") = "$name?params=${URLEncoder.encode(params, "UTF-8")}"

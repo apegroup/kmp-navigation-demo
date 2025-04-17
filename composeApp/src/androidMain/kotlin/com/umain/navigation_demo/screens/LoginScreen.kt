@@ -6,14 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.umain.navigation_demo.Screen
-import com.umain.navigation_demo.viewmodels.HomeEvent
-import com.umain.navigation_demo.viewmodels.HomeViewModel
 import com.umain.navigation_demo.viewmodels.LoginEvent
 import com.umain.navigation_demo.viewmodels.LoginViewModel
 
