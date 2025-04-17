@@ -7,3 +7,18 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
 }
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        mavenLocal()
+        maven("https://plugins.gradle.org/m2/")
+        maven("https://maven.pkg.github.com/apegroup/") // needed for Revolver
+    }
+
+    dependencies {
+        classpath(libs.kotlinx.serialization.json)
+    }
+}

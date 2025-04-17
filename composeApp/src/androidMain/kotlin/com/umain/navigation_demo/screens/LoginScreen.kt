@@ -7,13 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import com.umain.navigation_demo.Screen
 import com.umain.navigation_demo.viewmodels.HomeEvent
 import com.umain.navigation_demo.viewmodels.HomeViewModel
+import com.umain.navigation_demo.viewmodels.LoginEvent
+import com.umain.navigation_demo.viewmodels.LoginViewModel
 
 @Composable
-fun AccountScreen(
-    viewModel: HomeViewModel,
+fun LoginScreen(
+    viewModel: LoginViewModel,
     params: String,
+    onBackPressed: () -> Unit,
 ) {
     val uiState = remember { mutableStateOf(viewModel.state.value) }
 
@@ -24,12 +28,14 @@ fun AccountScreen(
     }
 
     Column {
-        Button(onClick = { viewModel.emit(HomeEvent.GoToModal) }) {
-            Text(text = "Account")
+        Text(text = "login")
+
+        Button(onClick = onBackPressed) {
+            Text(text = "Cancel login")
         }
 
-        Button(onClick = { viewModel.emit(HomeEvent.GoToModal) }) {
-            Text(text = "Modal")
+        Button(onClick = { viewModel.emit(LoginEvent.LoginComplete) }) {
+            Text(text = "login")
         }
     }
 }

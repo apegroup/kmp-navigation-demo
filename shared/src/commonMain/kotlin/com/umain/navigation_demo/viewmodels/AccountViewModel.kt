@@ -10,25 +10,26 @@ import com.umain.revolver.RevolverState
 import com.umain.revolver.RevolverViewModel
 
 
-sealed class LoginState : RevolverState {
-    data object LoginScreen : LoginState()
+sealed class AccountState : RevolverState {
+    data object AccountScreen : AccountState()
 }
 
-sealed class LoginEvent : RevolverEvent {
-    data object LoginComplete : LoginEvent()
+sealed class AccountEvent : RevolverEvent {
+    data object CloseAccountScreen : AccountEvent()
 }
 
-private typealias LoginEmitter = Emitter<LoginState, RevolverEffect>
+private typealias AccountEmitter = Emitter<AccountState, RevolverEffect>
 
-class LoginViewModel internal constructor(
+class AccountViewModel internal constructor(
     private val navigation: Navigation
-) : RevolverViewModel<LoginEvent, LoginState, RevolverEffect>(LoginState.LoginScreen) {
+) : RevolverViewModel<AccountEvent, AccountState, RevolverEffect>(AccountState.AccountScreen) {
 
     init {
-        addEventHandler<LoginEvent.LoginComplete>(::onLoginComplete)
+        addEventHandler<AccountEvent.CloseAccountScreen>(::onCloseAccountScreen)
+        navigation.setCurrentRoute(RouteInstance.from(Route.Account))
     }
 
-    private suspend fun onLoginComplete(event: LoginEvent.LoginComplete, emit: LoginEmitter) {
-        navigation.push(RouteInstance.from(Route.Account))
+    private suspend fun onCloseAccountScreen(event: AccountEvent.CloseAccountScreen, emit: AccountEmitter) {
+        navigation.popToRoot()
     }
 }

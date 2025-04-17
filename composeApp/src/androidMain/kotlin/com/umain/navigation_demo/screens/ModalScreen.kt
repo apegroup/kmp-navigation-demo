@@ -10,10 +10,13 @@ import androidx.compose.runtime.remember
 import com.umain.navigation_demo.Screen
 import com.umain.navigation_demo.viewmodels.HomeEvent
 import com.umain.navigation_demo.viewmodels.HomeViewModel
+import com.umain.navigation_demo.viewmodels.ModalEvent
+import com.umain.navigation_demo.viewmodels.ModalState
+import com.umain.navigation_demo.viewmodels.ModalViewModel
 
 @Composable
-fun LoginScreen(
-    viewModel: HomeViewModel,
+fun ModalScreen(
+    viewModel: ModalViewModel,
     params: String,
 ) {
     val uiState = remember { mutableStateOf(viewModel.state.value) }
@@ -22,15 +25,19 @@ fun LoginScreen(
         viewModel.state.collect { newState ->
             uiState.value = newState
         }
+
+        viewModel.emit(ModalEvent.ViewAppeared(params))
     }
 
-    Column {
-        Button(onClick = { viewModel.emit(HomeEvent.GoToModal) }) {
-            Text(text = "Account")
-        }
+    when (uiState.value) {
+        ModalState.Loading -> Text(text = "Loading")
+        is ModalState.ModalScreen -> Column {
+            val state = uiState.value as ModalState.ModalScreen
 
-        Button(onClick = { viewModel.emit(HomeEvent.GoToModal) }) {
-            Text(text = "Modal")
+            Text(text = state.data)
+            Button(onClick = { viewModel.emit(ModalEvent.CloseModal) }) {
+                Text(text = "go back")
+            }
         }
     }
 }

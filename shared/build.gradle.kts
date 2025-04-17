@@ -26,14 +26,14 @@ kotlin {
         }
     }
 
-
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.revolver)
+            api(libs.revolver)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.coroutines.core)
             implementation(libs.koin.core)
+            implementation(libs.ktor)
         }
         androidMain.dependencies {
             implementation(libs.androidx.lifecycle.viewmodel)
@@ -41,7 +41,6 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
-
         }
     }
 }

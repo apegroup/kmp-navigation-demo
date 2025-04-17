@@ -8,6 +8,6 @@ data class RouteInfo(
     val params: String = DEFAULT_PARAMS,
 ) {
     companion object {
-        const val DEFAULT_PARAMS = "{}"
+        internal const val DEFAULT_PARAMS = "{}"
     }
 }

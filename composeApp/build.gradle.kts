@@ -32,7 +32,12 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.androidx.navigation)
             implementation(projects.shared)
+            implementation(libs.koin.android)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.compose.material.navigation)
         }
     }
 }

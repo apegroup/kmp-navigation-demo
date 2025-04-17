@@ -10,31 +10,26 @@ import com.umain.revolver.RevolverState
 import com.umain.revolver.RevolverViewModel
 
 
-sealed class HomeState : RevolverState {
-    data object HomeScreen : HomeState()
+sealed class LoginState : RevolverState {
+    data object LoginScreen : LoginState()
 }
 
-sealed class HomeEvent : RevolverEvent {
-    data object GoToModal : HomeEvent()
-    data object GoToAccount : HomeEvent()
+sealed class LoginEvent : RevolverEvent {
+    data object LoginComplete : LoginEvent()
 }
 
-private typealias HomeEmitter = Emitter<HomeState, RevolverEffect>
+private typealias LoginEmitter = Emitter<LoginState, RevolverEffect>
 
-class HomeViewModel internal constructor(
+class LoginViewModel internal constructor(
     private val navigation: Navigation
-) : RevolverViewModel<HomeEvent, HomeState, RevolverEffect>(HomeState.HomeScreen) {
+) : RevolverViewModel<LoginEvent, LoginState, RevolverEffect>(LoginState.LoginScreen) {
 
     init {
-        addEventHandler<HomeEvent.GoToModal>(::onGoToModal)
-        addEventHandler<HomeEvent.GoToAccount>(::onGoToAccount)
+        addEventHandler<LoginEvent.LoginComplete>(::onLoginComplete)
+        navigation.setCurrentRoute(route = RouteInstance.from(Route.Login))
     }
 
-    private suspend fun onGoToModal(event: HomeEvent.GoToModal, emit: HomeEmitter) {
-        navigation.push(RouteInstance.from(Route.Modal, Route.Modal.Params("bar")))
-    }
-
-    private suspend fun onGoToAccount(event: HomeEvent.GoToAccount, emit: HomeEmitter) {
+    private suspend fun onLoginComplete(event: LoginEvent.LoginComplete, emit: LoginEmitter) {
         navigation.push(RouteInstance.from(Route.Account))
     }
 }
