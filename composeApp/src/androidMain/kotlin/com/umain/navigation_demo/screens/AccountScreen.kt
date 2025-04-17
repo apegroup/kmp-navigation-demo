@@ -17,21 +17,11 @@ fun AccountScreen(
     viewModel: AccountViewModel,
     params: String,
 ) {
-    val uiState = remember { mutableStateOf(viewModel.state.value) }
-
-    LaunchedEffect(key1 = true) {
-        viewModel.state.collect { newState ->
-            uiState.value = newState
-        }
-    }
-
     Column {
         Text(text = "my account")
         Button(onClick = { viewModel.emit(AccountEvent.CloseAccountScreen) }) {
             Text(text = "close")
         }
-
-
     }
 }
 

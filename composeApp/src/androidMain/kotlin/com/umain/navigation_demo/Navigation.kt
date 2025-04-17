@@ -31,8 +31,7 @@ sealed class Screen(val route: String) {
     data object Login : Screen("Login")
     data object Modal : Screen("Modal")
 
-    fun asRoute(params: String = "")
-    = "$route?&params=${URLEncoder.encode(params, "UTF-8")}"
+    fun asRoute(params: String = "") = "$route?&params=${URLEncoder.encode(params, "UTF-8")}"
 }
 
 private fun buildRoute(routeInfo: RouteInfo) = when (routeInfo.name) {
@@ -67,32 +66,27 @@ fun Navigation() {
         }
     }
 
-
-    ModalBottomSheetLayout(
-        bottomSheetNavigator = bottomSheetNavigator,
+    NavHost(
+        navController = navController,
+        startDestination = Screen.Home.route
     ) {
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Home.route
-        ) {
 
-            Screen(Screen.Home.route) {
-                HomeScreen(viewModel = koinInject(), params = it)
-            }
+        Screen(Screen.Home.route) {
+            HomeScreen(viewModel = koinInject(), params = it)
+        }
 
-            Screen(Screen.Account.route) {
-                AccountScreen(viewModel = koinInject(), params = it)
-            }
+        Screen(Screen.Account.route) {
+            AccountScreen(viewModel = koinInject(), params = it)
+        }
 
-            Screen(Screen.Login.route) {
-                LoginScreen(viewModel = koinInject(), params = it) {
-                    navController.navigateUp() // android can still manually modify backstack
-                }
+        Screen(Screen.Login.route) {
+            LoginScreen(viewModel = koinInject(), params = it) {
+                navController.navigateUp() // android can still manually modify backstack
             }
+        }
 
-            Modal(route = Screen.Modal.route) {
-                HomeScreen(viewModel = koinInject(), params = it)
-            }
+        Modal(route = Screen.Modal.route) {
+            HomeScreen(viewModel = koinInject(), params = it)
         }
     }
 }
@@ -102,7 +96,7 @@ fun NavGraphBuilder.Screen(
     content: @Composable (params: String) -> Unit,
 ) {
     composable(
-        route = Screen.Home.route,
+        route = "$route?params={params}",
         arguments = listOf(
             navArgument("params") {
                 type = NavType.StringType
@@ -111,10 +105,7 @@ fun NavGraphBuilder.Screen(
             },
         )
     ) {
-        HomeScreen(
-            viewModel = koinInject(),
-            params = it.arguments?.getString("params") ?: ""
-        )
+        content(it.arguments?.getString("params") ?: "")
     }
 }
 
@@ -123,7 +114,7 @@ fun NavGraphBuilder.Modal(
     content: @Composable (params: String) -> Unit,
 ) {
     bottomSheet(
-        route = Screen.Home.route,
+        route = "$route?params={params}",
         arguments = listOf(
             navArgument("params") {
                 type = NavType.StringType

@@ -22,11 +22,10 @@ fun ModalScreen(
     val uiState = remember { mutableStateOf(viewModel.state.value) }
 
     LaunchedEffect(key1 = true) {
+        viewModel.emit(ModalEvent.ViewAppeared(params))
         viewModel.state.collect { newState ->
             uiState.value = newState
         }
-
-        viewModel.emit(ModalEvent.ViewAppeared(params))
     }
 
     when (uiState.value) {
