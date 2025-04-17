@@ -43,7 +43,6 @@ private fun buildRoute(routeInfo: RouteInfo) = when (routeInfo.name) {
 }
 
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun Navigation() {
     val navigation: NavigationObservable = koinInject()
@@ -54,7 +53,6 @@ fun Navigation() {
 
     // Add the bottom sheet navigator to the controller
     navController.navigatorProvider.addNavigator(bottomSheetNavigator)
-
 
     LaunchedEffect(key1 = context) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
