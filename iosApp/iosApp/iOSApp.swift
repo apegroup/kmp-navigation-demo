@@ -5,10 +5,9 @@ import Shared
 struct iOSApp: App {
     @StateObject var navigationHandler: NavigationHandler
 
-
     init() {
         InitializationKt.initializeSharedLibrary()
-        _navigationHandler = StateObject(wrappedValue: .init(root: .init(name: RouteName.home, params: "")))
+        _navigationHandler = StateObject(wrappedValue: .init())
     }
 
     var body: some Scene {

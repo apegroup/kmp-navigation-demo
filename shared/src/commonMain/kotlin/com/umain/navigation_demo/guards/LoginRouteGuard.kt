@@ -14,8 +14,8 @@ internal class LoginRouteGuard(
         origin: RouteInstance<*>,
         destination: RouteInfo
     ): NavigationEvent? {
-
         if (origin.route.name == RouteName.Login) return null
+        // todo do an actual authentication check here
 
         val loginRoute = routeSerializer.buildRouteInfo(RouteInstance.from(Route.Login))
         return NavigationEvent.Push(loginRoute)

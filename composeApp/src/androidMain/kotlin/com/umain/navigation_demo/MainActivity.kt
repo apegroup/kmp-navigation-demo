@@ -11,6 +11,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         startKoin { androidContext(this@MainActivity) }
         initializeSharedLibrary()
-        setContent { Navigation() }
+        setContent { NavigationHandler() }
     }
 }

@@ -9,45 +9,38 @@ import SwiftUI
 import Shared
 
 class NavigationHandler: ObservableObject {
+    // setup navigation infrastructure
     @Published var path: [RouteInfo] = []
-    @Published var root: RouteInfo
+    @Published var root: RouteInfo = .init(name: RouteName.home, params: "")
     @Published var navigationEvent: NavigationEventKs?
     @Published var sheetData: (active: Bool, destination: RouteInfo?, onDismiss: (() -> Void)?) = (false, nil, nil)
-
     private let navigation: NavigationObservable = KoinHelper().navigationObservable
-    
-    init(path: [RouteInfo] = [], root: RouteInfo) {
-        self.path = path
-        self.root = root
-        
+
+    init() {
         self.sheetData.onDismiss = onSheetDismiss
-        
         navigation.navigationObservable.watch { [weak self] event in
             self?.navigationEvent = NavigationEventKs(event)
         }
     }
     
+    // start observing KMP navigation events
     func handleNavigationEvent(navigationEvent: NavigationEventKs) {
         switch navigationEvent {
             
-            // pop the top screen off the stack, if the top route is a modal
-            // close the modal
-            case .pop:
+            case .pop: // pop the top screen off the stack, if the top route is a modal close the modal
                 if sheetData.destination != nil { onSheetDismiss() }
                 guard path.count >= 1 else { return }
                 path.removeLast()
             
-            // pop all screens from the stack and close all modals
-            case .popToRoot:
+           
+            case .popToRoot: // pop all screens from the stack and close all modals
                 path = []
                 onSheetDismiss()
             
-            // add new route to the stack
-            case .push(let event):
+            case .push(let event): // add new route to the stack
                 path.append(event.route)
             
-            // push a modal onto the stack
-            case .pushAsModal(let event):
+            case .pushAsModal(let event): // push a modal onto the stack
                 self.sheetData.destination = event.route
                 self.sheetData.active = true
         }

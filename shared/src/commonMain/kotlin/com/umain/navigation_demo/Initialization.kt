@@ -14,7 +14,7 @@ import org.koin.dsl.module
 
 private val sharedModule = module {
     single<Navigation> { NavigationImpl(get(), buildAllScreenRouteGuards()) }
-    single<NavigationObservable> { get<Navigation>() }
+    single<NavigationObservable> { get<Navigation>() as NavigationObservable }
     factory<RouteSerializer> { RouteSerializerImpl() }
     factory { LoginRouteGuard(get()) }
     factory { HomeViewModel(get()) }
