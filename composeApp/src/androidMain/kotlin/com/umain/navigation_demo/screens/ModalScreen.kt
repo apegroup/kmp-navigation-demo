@@ -31,18 +31,18 @@ fun ModalScreen(
 
     when (uiState.value) {
         ModalState.Loading -> Text(text = "Loading")
-        is ModalState.ModalScreen ->  Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        )  {
-            val state = uiState.value as ModalState.ModalScreen
+        is ModalState.ModalScreen ->
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                val state = uiState.value as ModalState.ModalScreen
 
-            Text(text = state.data)
-            Button(onClick = { viewModel.emit(ModalEvent.CloseModal) }) {
-                Text(text = "go back")
+                Text(text = state.data)
+                Button(onClick = { viewModel.emit(ModalEvent.CloseModal) }) {
+                    Text(text = "go back")
+                }
             }
-        }
     }
 }
-

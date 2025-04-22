@@ -20,8 +20,8 @@ fun LoginScreen(
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    )  {
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Text(text = "login")
 
         Button(onClick = onBackPressed) {
@@ -33,4 +33,3 @@ fun LoginScreen(
         }
     }
 }
-
