@@ -31,7 +31,6 @@ fun NavigationHandler() {
 
     // start observing KMP navigation events
     LaunchedEffect(key1 = LocalContext.current) {
-        LocalLifecycleOwner.current.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             navigation.navigationObservable.collect {
                 when (it) {
                     is NavigationEvent.Pop -> navController.navigateUp()
@@ -40,7 +39,6 @@ fun NavigationHandler() {
                     is NavigationEvent.PushAsModal -> navController.navigate(it.route.routeString)
                 }
             }
-        }
     }
 
     // build navHost where KMP routes are mapped to Compose screens

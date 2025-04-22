@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,19 +21,21 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     params: String,
 ) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "Home")
+    Scaffold {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Home")
 
-        Button(onClick = { viewModel.emit(HomeEvent.GoToModal) }) {
-            Text(text = "Account")
-        }
+            Button(onClick = { viewModel.emit(HomeEvent.GoToAccount) }) {
+                Text(text = "Account")
+            }
 
-        Button(onClick = { viewModel.emit(HomeEvent.GoToModal) }) {
-            Text(text = "Modal")
+            Button(onClick = { viewModel.emit(HomeEvent.GoToModal) }) {
+                Text(text = "Modal")
+            }
         }
     }
 }
