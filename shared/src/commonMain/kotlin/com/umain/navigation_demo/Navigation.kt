@@ -6,6 +6,7 @@ import com.umain.navigation_demo.models.Route
 import com.umain.navigation_demo.models.RouteInfo
 import com.umain.navigation_demo.models.RouteInstance
 import com.umain.navigation_demo.models.RouteName
+import com.umain.navigation_demo.utils.DeeplinkHandler
 import com.umain.navigation_demo.utils.RouteSerializer
 import com.umain.revolver.flow.CFlow
 import com.umain.revolver.flow.CSharedFlow
@@ -20,7 +21,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.runBlocking
 
 interface NavigationObservable {
+    /** subscribe to this flow to receive KMP [NavigationEvent] */
     val navigationObservable: CFlow<NavigationEvent>
+
+    /** handles incoming deeplink string like "myApp://home" as a navigation event */
+    suspend fun handleDeeplink(deeplink: String)
 }
 
 internal interface Navigation {
@@ -43,6 +48,7 @@ internal interface Navigation {
 /** internal KMP class handling all navigation events to be send to clients */
 internal class NavigationImpl(
     private val routeSerializer: RouteSerializer,
+    private val deeplinkHandler: DeeplinkHandler,
     private val routeGuards: Map<RouteName, List<RouteGuard>>
 ) : Navigation, NavigationObservable {
 
@@ -50,6 +56,10 @@ internal class NavigationImpl(
     private val _navigationObservable: MutableSharedFlow<NavigationEvent> = MutableSharedFlow()
     override val navigationObservable: CFlow<NavigationEvent>
         get() = CSharedFlow(_navigationObservable, MainScope()).cFlow()
+
+    override suspend fun handleDeeplink(deeplink: String) {
+        deeplinkHandler.parseDeeplink(deeplink)?.let { push(it) }
+    }
 
     /** how KMP keeps track of what the current route is without knowing the stack */
     private var _currentRoute: MutableStateFlow<RouteInstance<*>> = MutableStateFlow(RouteInstance.from(Route.Home))

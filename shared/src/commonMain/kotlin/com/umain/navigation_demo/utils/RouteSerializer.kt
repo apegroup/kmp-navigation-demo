@@ -34,10 +34,7 @@ internal class RouteSerializerImpl : RouteSerializer {
         return navigationJsonHandler.encodeToString(serializer, params).encodeURLQueryComponent()
     }
 
-    override fun <T : Any> deserializeRouteParams(
-        route: Route<T>,
-        params: String
-    ): T {
+    override fun <T : Any> deserializeRouteParams(route: Route<T>, params: String): T {
         val serializer = route.serializer
             ?: throw IllegalArgumentException("Cannot deserialize params for route with a null serializer")
         return navigationJsonHandler.decodeFromString(serializer, params.decodeURLQueryComponent())

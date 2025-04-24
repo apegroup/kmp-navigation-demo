@@ -3,6 +3,7 @@ package com.umain.navigation_demo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.umain.navigation_demo.utils.initializeSharedLibrary
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
